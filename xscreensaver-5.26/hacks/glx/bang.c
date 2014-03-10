@@ -142,7 +142,7 @@ ENTRYPOINT void draw_bang (ModeInfo *mi)
 	Window window = MI_WINDOW(mi);
 	GLfloat camx, camz;
 	float r = 10.0;
-	int LightPos[4] = {-10,-10,-10,1};
+	int LightPos[4] = {-10,0,0,1};
 	int MatSpec [4] = {1,1,1,1};
 
 	glXMakeCurrent(MI_DISPLAY(mi), MI_WINDOW(mi), *(bang->glx_context));
@@ -164,13 +164,13 @@ ENTRYPOINT void draw_bang (ModeInfo *mi)
 		bang->alpha = 0;
 	}
 	
-	glLightiv(GL_LIGHT0, GL_POSITION, LightPos);
 	gluLookAt(camx, 0.0, camz, 0.0, 0.0, 0.0, 0, 1, 0);
+	glLightiv(GL_LIGHT0, GL_POSITION, LightPos);
 /*	gluLookAt(10, 0.0, 10, 0, 0, 0, 0, 1, 0);*/
 	
 	glPushMatrix ();
 
-	drawsphere(1.0, 0.0, 0.0, 0.0);
+	drawsphere(0.1, 0.0, 0.0, 0.0);
 	drawsphere(0.5, 3.0, 0.0, 0.0);
 	drawsphere(1.0, 6.0, 0.0, 0.0);
 
