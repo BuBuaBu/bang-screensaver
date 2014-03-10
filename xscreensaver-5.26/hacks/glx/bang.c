@@ -65,7 +65,7 @@ void drawtri(GLfloat *a, GLfloat *b, GLfloat *c, int div, float r) {
         drawtri(a, ab, ac, div-1, r);
         drawtri(b, bc, ab, div-1, r);
         drawtri(c, ac, bc, div-1, r);
-/*        drawtri(ab, bc, ac, div-1, r);   <--Comment this line and sphere looks really cool! */
+        drawtri(ab, bc, ac, div-1, r); /*   <--Comment this line and sphere looks really cool!*/
     }  
 }
 
@@ -99,10 +99,10 @@ ENTRYPOINT void reshape_bang (ModeInfo *mi, int w, int h){
 	glViewport(0, 0, w, h);
 
 	/* Set the correct perspective.*/
-	gluPerspective(45.0f,ratio,-100.0f,2.0f);
+	gluPerspective(45.0f,ratio,2.0f,100.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslated(0.0f, 0.0f, -1.0f);
+	glTranslated(0.0f, 0.0f, 0.0f);
 	
 }
 
@@ -117,6 +117,8 @@ ENTRYPOINT void init_bang (ModeInfo *mi)
 	env = &bang[MI_SCREEN(mi)];
 	env->alpha = 0;
 	env->glx_context = init_GL(mi);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 	reshape_bang(mi, MI_WIDTH(mi), MI_HEIGHT(mi));
 	
 	glEnable(GL_DEPTH_TEST);
@@ -140,8 +142,13 @@ ENTRYPOINT void draw_bang (ModeInfo *mi)
 	Window window = MI_WINDOW(mi);
 	GLfloat camx, camz;
 	float r = 10.0;
+	int LightPos[4] = {-10,-10,-10,1};
+	int MatSpec [4] = {1,1,1,1};
 
 	glXMakeCurrent(MI_DISPLAY(mi), MI_WINDOW(mi), *(bang->glx_context));
+
+	glMaterialiv(GL_FRONT_AND_BACK,GL_SPECULAR,MatSpec);
+	glMateriali(GL_FRONT_AND_BACK,GL_SHININESS,100);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -156,8 +163,10 @@ ENTRYPOINT void draw_bang (ModeInfo *mi)
 	{
 		bang->alpha = 0;
 	}
-/*	gluLookAt(camx, 0.0, camz, 0.0, 0.0, 0.0, 0, 1, 0);*/
-	gluLookAt(10, 0.0, 10, 0, 0, 0, 0, 1, 0);
+	
+	glLightiv(GL_LIGHT0, GL_POSITION, LightPos);
+	gluLookAt(camx, 0.0, camz, 0.0, 0.0, 0.0, 0, 1, 0);
+/*	gluLookAt(10, 0.0, 10, 0, 0, 0, 0, 1, 0);*/
 	
 	glPushMatrix ();
 
